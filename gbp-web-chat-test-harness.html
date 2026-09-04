@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<title>GBP Web Chat — Test Harness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --panel: #ffffff;
+    --ink: #1c2430;
+    --muted: #5c6572;
+    --line: #dfe3e8;
+    --accent: #1f5c5c;
+    --accent-bg: #e7efee;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    color: var(--muted);
+    margin: 0 0 28px;
+    font-size: 0.95rem;
+  }
+  .env {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    align-items: center;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 420px) {
+    .wrap { padding: 32px 16px 72px; }
+  }
+  .env code {
+    font-family: inherit;
+    font-weight: 600;
+  }
+  h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 32px 0 12px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 8px;
+  }
+  ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  li {
+    margin-bottom: 8px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-top: 32px;
+  }
+  .panel p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  footer {
+    margin-top: 48px;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>GBP Web Chat — Test Harness</h1>
+  <p class="subtitle">A blank page for testing the Agentforce Enhanced Chat widget outside of Salesforce. Open this page in a browser and the chat launcher should appear in the corner.</p>
+
+  <div class="env">
+    <span>Environment: <code>gbcfullsb</code></span>
+    <span>·</span>
+    <span>Channel: <code>GBP_WebChat_Channel</code></span>
+  </div>
+
+  <h2>What to check</h2>
+  <ul>
+    <li>The chat launcher appears within a few seconds of the page loading</li>
+    <li>Clicking it opens the conversation window with no pre-chat form</li>
+    <li>Messages send and the agent responds without errors</li>
+    <li>Escalation to a human queue behaves as expected when triggered</li>
+    <li>The window behaves normally on both desktop and mobile screen widths</li>
+  </ul>
+
+  <div class="panel">
+    <p>This is a sandbox build. Nothing here is customer-facing. Note anything unexpected (errors, slow load, layout issues) and pass it back to the project lead.</p>
+  </div>
+
+  <footer>Internal test page · not for distribution outside the team</footer>
+</div>
+
+<script type='text/javascript'>
+	function initEmbeddedMessaging() {
+		try {
+			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+			embeddedservice_bootstrap.init(
+				'00DAu00000IO3Ix',
+				'GBP_WebChat_Channel',
+				'https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatChannel1785391118765',
+				{
+					scrt2URL: 'https://georgebrown--gbcfullsb.sandbox.my.salesforce-scrt.com'
+				}
+			);
+		} catch (err) {
+			console.error('Error loading Embedded Messaging: ', err);
+		}
+	};
+</script>
+<script type='text/javascript' src='https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatChannel1785391118765/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+</body>
+</html>
