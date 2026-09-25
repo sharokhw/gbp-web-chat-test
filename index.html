@@ -1,144 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<title>GBP Web Chat — Test Harness</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #f6f7f9;
-    --panel: #ffffff;
-    --ink: #1c2430;
-    --muted: #5c6572;
-    --line: #dfe3e8;
-    --accent: #1f5c5c;
-    --accent-bg: #e7efee;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    line-height: 1.5;
-  }
-  .wrap {
-    max-width: 620px;
-    margin: 0 auto;
-    padding: 56px 24px 96px;
-  }
-  h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0 0 6px;
-    letter-spacing: -0.01em;
-  }
-  .subtitle {
-    color: var(--muted);
-    margin: 0 0 28px;
-    font-size: 0.95rem;
-  }
-  .env {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 6px 10px;
-    align-items: center;
-    background: var(--accent-bg);
-    color: var(--accent);
-    border-radius: 6px;
-    padding: 8px 14px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-bottom: 32px;
-  }
-  @media (max-width: 420px) {
-    .wrap { padding: 32px 16px 72px; }
-  }
-  .env code {
-    font-family: inherit;
-    font-weight: 600;
-  }
-  h2 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 32px 0 12px;
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 8px;
-  }
-  ul {
-    margin: 0;
-    padding-left: 20px;
-  }
-  li {
-    margin-bottom: 8px;
-  }
-  .panel {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 20px 24px;
-    margin-top: 32px;
-  }
-  .panel p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-  footer {
-    margin-top: 48px;
-    color: var(--muted);
-    font-size: 0.8rem;
-  }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <title>Ask George Portal POC</title>
+  <style>
+    :root { --navy:#09204a; --blue:#1b64e6; --tint:#edf4fa; --text:#3f3f3f; --line:#d6e4f0; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Segoe UI, Arial, sans-serif; color: var(--text); background: #ffffff; }
+    header { background: var(--navy); color: #ffffff; padding: 20px 16px; }
+    header h1 { margin: 0; font-size: 22px; }
+    header p { margin: 6px 0 0; color: #d6e4f0; font-size: 14px; }
+    main { max-width: 760px; margin: 0 auto; padding: 24px 16px 120px; }
+    .warn { background: #fff4e5; border: 1px solid #ffd19a; padding: 10px 14px; border-radius: 8px; font-size: 14px; }
+    fieldset { border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin: 20px 0; }
+    legend { font-weight: 600; color: var(--navy); padding: 0 6px; }
+    label { display: block; font-size: 14px; margin: 10px 0 4px; }
+    input { width: 100%; padding: 9px 10px; font-size: 15px; border: 1px solid #b9c7d8; border-radius: 6px; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    button { padding: 9px 16px; font-size: 14px; border-radius: 6px; border: 1px solid var(--blue); background: var(--blue); color: #ffffff; cursor: pointer; }
+    button.secondary { background: #ffffff; color: var(--blue); }
+    #sent { background: var(--tint); border-radius: 8px; padding: 12px 14px; font-family: Consolas, monospace; font-size: 13px; white-space: pre-wrap; }
+    #log { background: #0f1b33; color: #cfe0ff; border-radius: 8px; padding: 12px 14px; font-family: Consolas, monospace; font-size: 12px; min-height: 90px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    h2 { font-size: 17px; color: var(--navy); margin: 26px 0 8px; }
+    ol { padding-left: 20px; font-size: 14px; }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>GBP Web Chat — Test Harness</h1>
-  <p class="subtitle">A blank page for testing the Agentforce Enhanced Chat widget outside of Salesforce. Open this page in a browser and the chat launcher should appear in the corner.</p>
+  <header>
+    <h1>Ask George: signed-in portal POC</h1>
+    <p>Simulates a signed-in student. Deployment: GBP_WebChat_POC (sandbox gbcfullsb)</p>
+  </header>
+  <main>
+    <p class="warn">Test page only. The values below are typed here and sent as <b>unverified</b> hidden pre-chat fields. Use test data, never a real student's details.</p>
 
-  <div class="env">
-    <span>Environment: <code>gbcfullsb</code></span>
-    <span>·</span>
-    <span>Channel: <code>GBP_WebChat_Test</code></span>
-  </div>
+    <fieldset>
+      <legend>Simulated signed-in student</legend>
+      <label for="fullName">Full name (Student_Full_Name)</label>
+      <input id="fullName" autocomplete="off">
+      <label for="email">Email (Student_Email)</label>
+      <input id="email" autocomplete="off">
+      <label for="studentNumber">Student number (Student_Number)</label>
+      <input id="studentNumber" autocomplete="off">
+      <div class="row">
+        <button id="save">Save and reload</button>
+        <button id="anon" class="secondary">Act as anonymous visitor</button>
+      </div>
+    </fieldset>
 
-  <h2>What to check</h2>
-  <ul>
-    <li>The chat launcher appears within a few seconds of the page loading</li>
-    <li>Clicking it opens the conversation window with no pre-chat form</li>
-    <li>Messages send and the agent responds without errors</li>
-    <li>Escalation to a human queue behaves as expected when triggered</li>
-    <li>The window behaves normally on both desktop and mobile screen widths</li>
-  </ul>
+    <h2>Sent to the chat on this load</h2>
+    <div id="sent">Nothing yet.</div>
 
-  <div class="panel">
-    <p>This is a sandbox build. Nothing here is customer-facing. Note anything unexpected (errors, slow load, layout issues) and pass it back to the project lead.</p>
-  </div>
+    <h2>Event log</h2>
+    <div id="log"></div>
 
-  <footer>Internal test page · not for distribution outside the team</footer>
-</div>
+    <h2>How to test</h2>
+    <ol>
+      <li>Enter test values, click <b>Save and reload</b>, then open the chat and say hello.</li>
+      <li>Check the log shows <code>setHiddenPrechatFields</code> was called with your values.</li>
+      <li>In Salesforce, open the newest Messaging Session and look at Student Full Name, Student Email and Student Number.</li>
+      <li>Values only go out when a <b>new</b> conversation starts. To test new values, end the chat and use a new private window, or clear this site's data.</li>
+    </ol>
+  </main>
 
-<script type='text/javascript'>
-	function initEmbeddedMessaging() {
-		try {
-			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+  <script>
+    // POC: values the portal would supply from the signed-in session.
+    var STORE_KEY = 'askGeorgePocStudent';
+    var DEFAULTS = { fullName: 'Jane Test', email: 'jane.test@example.com', studentNumber: '100000001' };
 
-			embeddedservice_bootstrap.init(
-				'00DAu00000IO3Ix',
-				'GBP_WebChat_Test',
-				'https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatTe1790261779090',
-				{
-					scrt2URL: 'https://georgebrown--gbcfullsb.sandbox.my.salesforce-scrt.com'
-				}
-			);
-		} catch (err) {
-			console.error('Error loading Embedded Messaging: ', err);
-		}
-	};
-</script>
-<script type='text/javascript' src='https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatTe1790261779090/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+    function log(msg) {
+      var el = document.getElementById('log');
+      el.textContent += '[' + new Date().toLocaleTimeString() + '] ' + msg + '\n';
+      console.log('[Ask George POC] ' + msg);
+    }
+
+    function loadStudent() {
+      try {
+        var raw = localStorage.getItem(STORE_KEY);
+        if (raw === 'anonymous') return null;
+        return raw ? JSON.parse(raw) : DEFAULTS;
+      } catch (e) { return DEFAULTS; }
+    }
+
+    var student = loadStudent();
+    var form = student || DEFAULTS;
+    document.getElementById('fullName').value = form.fullName || '';
+    document.getElementById('email').value = form.email || '';
+    document.getElementById('studentNumber').value = form.studentNumber || '';
+
+    document.getElementById('save').addEventListener('click', function () {
+      var s = {
+        fullName: document.getElementById('fullName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        studentNumber: document.getElementById('studentNumber').value.trim()
+      };
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch (e) {}
+      location.reload();
+    });
+    document.getElementById('anon').addEventListener('click', function () {
+      try { localStorage.setItem(STORE_KEY, 'anonymous'); } catch (e) {}
+      location.reload();
+    });
+
+    // Registered BEFORE the Salesforce snippet runs init(), so the ready event is not missed.
+    window.addEventListener('onEmbeddedMessagingReady', function () {
+      log('onEmbeddedMessagingReady fired');
+      if (!student) {
+        document.getElementById('sent').textContent = 'Anonymous visitor: no hidden fields sent.';
+        log('Anonymous mode: setHiddenPrechatFields not called');
+        return;
+      }
+      // Only send fields that have a value; never send empty strings.
+      var fields = {};
+      if (student.fullName) fields['Student_Full_Name'] = student.fullName;
+      if (student.email) fields['Student_Email'] = student.email;
+      if (student.studentNumber) fields['Student_Number'] = student.studentNumber;
+      try {
+        embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields(fields);
+        document.getElementById('sent').textContent = JSON.stringify(fields, null, 2);
+        log('setHiddenPrechatFields called with ' + Object.keys(fields).join(', '));
+      } catch (e) {
+        log('setHiddenPrechatFields FAILED: ' + e.message);
+      }
+    });
+
+    ['onEmbeddedMessagingConversationStarted', 'onEmbeddedMessagingButtonClicked',
+     'onEmbeddedMessagingWindowOpened', 'onEmbeddedMessagingConversationClosed']
+      .forEach(function (evt) { window.addEventListener(evt, function () { log(evt + ' fired'); }); });
+  </script>
+
+  <!-- Salesforce snippet for GBP_WebChat_POC, as generated in Setup -->
+  <script type='text/javascript'>
+    function initEmbeddedMessaging() {
+      try {
+        embeddedservice_bootstrap.settings.language = 'en_US';
+        embeddedservice_bootstrap.init(
+          '00DAu00000IO3Ix',
+          'GBP_WebChat_POC',
+          'https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatPO1790374298805',
+          { scrt2URL: 'https://georgebrown--gbcfullsb.sandbox.my.salesforce-scrt.com' }
+        );
+      } catch (err) {
+        console.error('Error loading Embedded Messaging: ', err);
+      }
+    };
+  </script>
+  <script type='text/javascript' src='https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatPO1790374298805/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 </body>
 </html>
