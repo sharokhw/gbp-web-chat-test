@@ -30,10 +30,10 @@
   }
   main { max-width: 820px; margin: 0 auto; }
   h1 { font-size: 22px; margin: 0 0 4px; }
-  h2 { font-size: 15px; margin: 28px 0 8px; text-transform: uppercase; letter-spacing: .06em;
+  h2 { font-size: 15px; margin: 28px 0 8px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
   p { margin: 0 0 12px; }
   .sub { color: var(--muted); margin-bottom: 24px; }
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; paddin
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
   .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
   button {
     font: inherit; padding: 8px 14px; border-radius: 6px; cursor: pointer;
@@ -61,7 +61,7 @@
 
   <h2>What to do</h2>
   <ol>
-    <li>Open the chat, type <strong>agent</strong>, give details, choose <strong>1</strong>.</
+    <li>Open the chat, type <strong>agent</strong>, give details, choose <strong>1</strong>.</li>
     <li>Let it sit past the timeout (currently <strong>10 minutes</strong>) with nobody picking it up.</li>
     <li>Ask George Closure Bot joins. Reply anything so it closes the chat.</li>
     <li>Watch the log below, then reopen the widget — it should start <strong>fresh</strong>, with no transcript and no "continue".</li>
@@ -89,7 +89,7 @@ var logEl = document.getElementById("log");
 function log(msg, cls) {
   var d = document.createElement("div");
   d.className = "e" + (cls ? " " + cls : "");
-  d.innerHTML = '<span class="t">' + new Date().toTimeString().slice(0, 8) + "</span>  " + msg
+  d.innerHTML = '<span class="t">' + new Date().toTimeString().slice(0, 8) + "</span>  " + msg;
   logEl.appendChild(d);
   logEl.scrollTop = logEl.scrollHeight;
   try { console.log("[GBP chat]", msg); } catch (e) {}
@@ -187,40 +187,7 @@ function initEmbeddedMessaging() {
     embeddedservice_bootstrap.init(
       "00DAu00000IO3IxMAL",
       "GBP_WebChat_Channel",
-      "https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatChannel1785391118765vfo
-      { scrt2URL: "https://georgebrown--gbcfullsb.sandbox.my.salesforce-scrt.com" }
-    );
-    log("bootstrap init called", "ok");
-})();
-
-document.getElementById("manualClear").onclick = function () { window.__gbpClearSession(); };
-
-/* Other lifecycle events, logged to see which ones actually carry the bot name. */
-["onEmbeddedMessagingConversationOpened",
- "onEmbeddedMessagingConversationClosed",
- "onEmbeddedMessagingReady",
- "onEmbeddedMessagingInviteAccepted"].forEach(function (name) {
-  window.addEventListener(name, function (e) {
-    log(name + "  " + esc(JSON.stringify((e && e.detail) || {})));
-  });
-});
-</script>
-
-<!-- ------------------------------------------------------------------
-     Embedded Messaging bootstrap.
-     Values below are from the GBP Full Sandbox. If the widget does not
-     appear, copy the four arguments from Setup > Embedded Service
-     Deployments > GBP_WebChat_Channel > Code Snippet and replace them:
-     that snippet is authoritative, these are reconstructed.
-     ------------------------------------------------------------------ -->
-<script type="text/javascript">
-function initEmbeddedMessaging() {
-  try {
-    embeddedservice_bootstrap.settings.language = "en_US";
-    embeddedservice_bootstrap.init(
-      "00DAu00000IO3IxMAL",
-      "GBP_WebChat_Channel",
-      "https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatChannel1785391118765vforces",
+      "https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatChannel1785391118765",
       { scrt2URL: "https://georgebrown--gbcfullsb.sandbox.my.salesforce-scrt.com" }
     );
     log("bootstrap init called", "ok");
@@ -231,7 +198,7 @@ function initEmbeddedMessaging() {
 </script>
 <script
   type="text/javascript"
-  src="https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatChannel1785391118765vforces/assets/js/bootstrap.min.js"
+  src="https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatChannel1785391118765/assets/js/bootstrap.min.js"
   onload="initEmbeddedMessaging()"
   onerror="log('bootstrap.min.js failed to load - check the site URL against Setup &gt; Embedded Service Deployments &gt; Code Snippet', 'bad')">
 </script>
