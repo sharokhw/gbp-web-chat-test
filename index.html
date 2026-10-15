@@ -30,10 +30,10 @@
   }
   main { max-width: 820px; margin: 0 auto; }
   h1 { font-size: 22px; margin: 0 0 4px; }
-  h2 { font-size: 15px; margin: 28px 0 8px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  h2 { font-size: 15px; margin: 28px 0 8px; text-transform: uppercase; letter-spacing: .06em;
   p { margin: 0 0 12px; }
   .sub { color: var(--muted); margin-bottom: 24px; }
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; paddin
   .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
   button {
     font: inherit; padding: 8px 14px; border-radius: 6px; cursor: pointer;
@@ -41,6 +41,9 @@
   }
   label { display: flex; gap: 6px; align-items: center; color: var(--muted); }
   #log {
+    font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: pre-wrap; word-break: break-word;
+    max-height: 48vh; overflow: auto; margin: 0;
     font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     white-space: pre-wrap; word-break: break-word;
     max-height: 48vh; overflow: auto; margin: 0;
@@ -61,7 +64,7 @@
   <h2>What to do</h2>
   <ol>
     <li>Open the chat, type <strong>agent</strong>, give details, choose <strong>1</strong>.</
-    <li>Let it sit past the timeout (currently <strong>10 minutes</strong>) with nobody picking it up.</li>
+    <li>Let it sit past the timeout (currently <strong>1 minute</strong>) with nobody picking it up.</li>
     <li>Ask George Closure Bot joins. Reply anything so it closes the chat.</li>
     <li>Watch the log below, then reopen the widget — it should start <strong>fresh</strong>, with no transcript and no "continue".</li>
   </ol>
@@ -72,7 +75,6 @@
       <button id="clearLog">Clear log</button>
       <button id="manualClear">Call clearSession() now</button>
       <label><input type="checkbox" id="armed" checked> auto-clear armed</label>
-      <label><input type="checkbox" id="scoped" checked> closure bot only</label>
     </div>
     <pre id="log"></pre>
   </div>
@@ -88,7 +90,7 @@ var logEl = document.getElementById("log");
 function log(msg, cls) {
   var d = document.createElement("div");
   d.className = "e" + (cls ? " " + cls : "");
-  d.innerHTML = '<span class="t">' + new Date().toTimeString().slice(0, 8) + "</span>  " + msg;
+  d.innerHTML = '<span class="t">' + new Date().toTimeString().slice(0, 8) + "</span>  " + msg
   logEl.appendChild(d);
   logEl.scrollTop = logEl.scrollHeight;
   try { console.log("[GBP chat]", msg); } catch (e) {}
@@ -103,13 +105,13 @@ document.getElementById("clearLog").onclick = function () { logEl.innerHTML = ""
  * Registered before init() so the first status event is not missed.
  * ------------------------------------------------------------------ */
 (function () {
-  var BOT_LABEL = "Ask George Closure Bot";   // must match agent_label exactly
   var CLEAR_DELAY_MS = 0;
 
-  function mentionsClosureBot(obj) {
+  function readPayload(detail) {
     try {
-      return JSON.stringify(obj).toLowerCase().indexOf(BOT_LABEL.toLowerCase()) !== -1;
-    } catch (err) { return false; }
+      var raw = detail && detail.conversationEntry && detail.conversationEntry.entryPayload;
+      return raw ? JSON.parse(raw) : null;
+    } catch (err) { return null; }
   }
 
   function clearSession() {
@@ -117,7 +119,7 @@ document.getElementById("clearLog").onclick = function () { logEl.innerHTML = ""
       var api = window.embeddedservice_bootstrap &&
                 window.embeddedservice_bootstrap.userVerificationAPI;
       if (!api || typeof api.clearSession !== "function") {
-        log("clearSession NOT AVAILABLE on this deployment - this approach will not work", "bad");
+        log("clearSession NOT AVAILABLE on this deployment", "bad");
         return;
       }
       var r = api.clearSession();
@@ -133,26 +135,20 @@ document.getElementById("clearLog").onclick = function () { logEl.innerHTML = ""
   window.__gbpClearSession = clearSession;
 
   window.addEventListener("onEmbeddedMessagingSessionStatusUpdate", function (e) {
-    var d = (e && e.detail) || {};
-    log("sessionStatusUpdate  " + esc(JSON.stringify(d)));
+    var p = readPayload(e && e.detail);
+    if (!p) { log("could not read entryPayload", "warn"); return; }
 
-    if (d.sessionStatus !== "Ended") return;
-    if (d.sessionStatusPrev !== "Active") {
-      log("prev status was '" + esc(d.sessionStatusPrev) + "', not Active - not clearing", "warn");
-      return;
-    }
-    if (d.sessionEndedByRole !== "Agent") {
-      log("endedByRole was '" + esc(d.sessionEndedByRole) + "', not Agent - not clearing", "warn");
-      return;
-    }
+    log("status " + esc(p.sessionStatusPrev) + " -> " + esc(p.sessionStatus) +
+        "  endedBy=" + esc(p.sessionEndedByRole) + "  session=" + esc(p.sessionId));
 
-    var scoped = document.getElementById("scoped").checked;
-    if (scoped && !mentionsClosureBot(d)) {
-      log("payload does not name the Closure Bot - NOT clearing. If this is a timeout test, thyload and scoping must be done another way.", "warn");
+    if (p.sessionStatus !== "Ended") return;
+
+    if (p.sessionEndedByRole !== "Chatbot") {
+      log("ended by '" + esc(p.sessionEndedByRole) + "' - leaving it alone", "warn");
       return;
     }
     if (!document.getElementById("armed").checked) {
-      log("auto-clear disarmed - would have cleared here", "warn");
+      log("disarmed - would have cleared here", "warn");
       return;
     }
     CLEAR_DELAY_MS > 0 ? setTimeout(clearSession, CLEAR_DELAY_MS) : clearSession();
@@ -161,7 +157,7 @@ document.getElementById("clearLog").onclick = function () { logEl.innerHTML = ""
 
 document.getElementById("manualClear").onclick = function () { window.__gbpClearSession(); };
 
-/* Other lifecycle events, logged to see which ones actually carry the bot name. */
+/* Other lifecycle events, logged for visibility. */
 ["onEmbeddedMessagingConversationOpened",
  "onEmbeddedMessagingConversationClosed",
  "onEmbeddedMessagingReady",
@@ -169,9 +165,6 @@ document.getElementById("manualClear").onclick = function () { window.__gbpClear
   window.addEventListener(name, function (e) {
     log(name + "  " + esc(JSON.stringify((e && e.detail) || {})));
   });
-});
-</script>
-
 });
 </script>
 
