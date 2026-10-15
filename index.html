@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <title>Ask George — Closure Bot clearSession test</title>
 <style>
   :root {
@@ -39,7 +39,6 @@
     font: inherit; padding: 8px 14px; border-radius: 6px; cursor: pointer;
     border: 1px solid var(--line); background: var(--bg); color: var(--fg);
   }
-  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   label { display: flex; gap: 6px; align-items: center; color: var(--muted); }
   #log {
     font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -57,11 +56,11 @@
 <body>
 <main>
   <h1>Closure Bot — clearSession test</h1>
-  <p class="sub">GBP Full Sandbox · deployment <code>GBP_WebChat_Channel</code></p>
+  <p class="sub">GBP Full Sandbox · deployment <code>GBP_WebChat_Test</code></p>
 
   <h2>What to do</h2>
   <ol>
-    <li>Open the chat, type <strong>agent</strong>, give details, choose <strong>1</strong>.</li>
+    <li>Open the chat, type <strong>agent</strong>, give details, choose <strong>1</strong>.</
     <li>Let it sit past the timeout (currently <strong>10 minutes</strong>) with nobody picking it up.</li>
     <li>Ask George Closure Bot joins. Reply anything so it closes the chat.</li>
     <li>Watch the log below, then reopen the widget — it should start <strong>fresh</strong>, with no transcript and no "continue".</li>
@@ -149,7 +148,7 @@ document.getElementById("clearLog").onclick = function () { logEl.innerHTML = ""
 
     var scoped = document.getElementById("scoped").checked;
     if (scoped && !mentionsClosureBot(d)) {
-      log("payload does not name the Closure Bot - NOT clearing. If this is a timeout test, the agent name is not in the payload and scoping must be done another way.", "warn");
+      log("payload does not name the Closure Bot - NOT clearing. If this is a timeout test, thyload and scoping must be done another way.", "warn");
       return;
     }
     if (!document.getElementById("armed").checked) {
@@ -173,34 +172,32 @@ document.getElementById("manualClear").onclick = function () { window.__gbpClear
 });
 </script>
 
-<!-- ------------------------------------------------------------------
-     Embedded Messaging bootstrap.
-     Values below are from the GBP Full Sandbox. If the widget does not
-     appear, copy the four arguments from Setup > Embedded Service
-     Deployments > GBP_WebChat_Channel > Code Snippet and replace them:
-     that snippet is authoritative, these are reconstructed.
-     ------------------------------------------------------------------ -->
+});
+</script>
+
 <script type="text/javascript">
 function initEmbeddedMessaging() {
   try {
-    embeddedservice_bootstrap.settings.language = "en_US";
+    embeddedservice_bootstrap.settings.language = 'en_US';
     embeddedservice_bootstrap.init(
-      "00DAu00000IO3IxMAL",
-      "GBP_WebChat_Channel",
-      "https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatChannel1785391118765",
-      { scrt2URL: "https://georgebrown--gbcfullsb.sandbox.my.salesforce-scrt.com" }
+      '00DAu00000IO3Ix',
+      'GBP_WebChat_Test',
+      'https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatTe1790261779090',
+      {
+        scrt2URL: 'https://georgebrown--gbcfullsb.sandbox.my.salesforce-scrt.com'
+      }
     );
     log("bootstrap init called", "ok");
   } catch (err) {
+    console.error('Error loading Embedded Messaging: ', err);
     log("bootstrap init FAILED: " + esc(err && err.message || err), "bad");
   }
 }
 </script>
-<script
-  type="text/javascript"
-  src="https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatChannel1785391118765/assets/js/bootstrap.min.js"
+<script type="text/javascript"
+  src="https://georgebrown--gbcfullsb.sandbox.my.site.com/ESWGBPWebChatTe1790261779090/assets/js/bootstrap.min.js"
   onload="initEmbeddedMessaging()"
-  onerror="log('bootstrap.min.js failed to load - check the site URL against Setup &gt; Embedded Service Deployments &gt; Code Snippet', 'bad')">
+  onerror="log('bootstrap.min.js failed to load', 'bad')">
 </script>
 </body>
 </html>
